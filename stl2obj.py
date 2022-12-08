@@ -53,7 +53,7 @@ def convertFile(filepath, outdir):
             print_error(filepath,": The file doesn't exist.")
 
         # By default the output is the stl filename followed by '.obj'
-        objfilename = filepath+".obj"
+        objfilename = filepath.replace(".stl",".obj")
         
         pointList = []
         facetList = []
@@ -100,9 +100,10 @@ def convertFile(filepath, outdir):
     return False
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="STL to OBJ converter")
-    parser.add_argument('indir', help="Path to input directory.")
-    parser.add_argument('--outdir', '-o', default='output', help="Path to output directory.")
-    parser.set_defaults(func=run)
-    args = parser.parse_args()
-    ret = args.func(args)
+    # parser = argparse.ArgumentParser(description="STL to OBJ converter")
+    # parser.add_argument('indir', help="Path to input directory.")
+    # parser.add_argument('--outdir', '-o', default='output', help="Path to output directory.")
+    # parser.set_defaults(func=run)
+    # args = parser.parse_args()
+    # ret = args.func(args)
+    convertFiles("./.", "./.")
