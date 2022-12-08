@@ -104,10 +104,10 @@ def convertFile(filepath, outdir):
     return False
 
 if __name__ == '__main__':
-    # parser = argparse.ArgumentParser(description="STL to OBJ converter")
-    # parser.add_argument('indir', help="Path to input directory.")
-    # parser.add_argument('--outdir', '-o', default='output', help="Path to output directory.")
-    # parser.set_defaults(func=run)
-    # args = parser.parse_args()
-    # ret = args.func(args)
-    convertFiles("./.", "./.")
+    parser = argparse.ArgumentParser(description="STL to OBJ converter")
+    parser.add_argument('indir', help="Path to input directory.")
+    parser.add_argument('--outdir', '-o', default='output', help="Path to output directory.")
+    parser.set_defaults(func=run)
+    args = parser.parse_args()
+    ret = args.func(args)
+    #convertFiles("./.", "./.")
