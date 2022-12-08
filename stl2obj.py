@@ -32,14 +32,14 @@ def print_error(*str):
     print("\n")
     sys.exit()
 
-def GetPointId(point,list):
-    for i,pts in enumerate(list):
-        if pts[0] == point[0] and pts[1] == point[1] and pts[2] == point[2] :
+def GetPointId(point,pl):
+    for i,pts in enumerate(pl):
+        if pts == point :
             #obj start to count at 1
             return i+1
-    list.append(point)
+    pl.append(point)
     #obj start to count at 1
-    return len(list)
+    return len(pl)
 
 def convertFile(filepath, outdir):
     if not os.path.isdir(outdir):
@@ -55,8 +55,9 @@ def convertFile(filepath, outdir):
         # By default the output is the stl filename followed by '.obj'
         objfilename = filepath.replace(".stl",".obj")
         
-        pointList = []
-        facetList = []
+        points = []
+        facets = []
+        normals = []
 
         # start reading the STL file
         stlfile = open(filepath, "r")
@@ -64,36 +65,38 @@ def convertFile(filepath, outdir):
         line = stlfile.readline()
         lineNb = 1
         while line != "":
+            vertices = []
             tab = line.strip().split()       
             if len(tab) > 0:
                 if "facet" in tab[0]:
-                    vertices = []
-                    normal = map(float,tab[2:])
+                    normal = tuple(map(float,tab[2:]))
+                    normals.append(normal)
                     while "endfacet" not in tab[0]:
                         if "vertex" in tab[0]:
-                            pts = list(map(float,tab[1:]))
-                            vertices.append(GetPointId(pts,pointList))
+                            v = tuple(map(float,tab[1:]))
+                            points.append(v)
+                            vertices.append(v)
                         line = stlfile.readline()
                         lineNb = lineNb +1
-                        tab = line.strip().split()        
-                    if len(vertices) == 0:
-                        print_error("Unvalid facet description at line ",lineNb)
-                    facetList.append({"vertices":vertices, "normal": normal})
-
+                        tab = line.strip().split()     
+                    facets.append(vertices)
             line = stlfile.readline()
             lineNb = lineNb +1    
 
         stlfile.close()
-
+        setpts = list(set(points))
+        sp = setpts
+        #sp = [pt for pt in points if pt in setpts]
+        facet_map = [list(map(lambda v: sp.index(v) + 1, f)) for f in facets]
         # Write the target file
         objfile = open(objfilename, "w")
         objfile.write("# File type: ASCII OBJ\n")
         objfile.write("# Generated from "+os.path.basename(filepath)+"\n")
-        for pts in pointList:
+        for pts in sp:
             objfile.write("v "+" ".join(list(map(str,pts)))+"\n")
 
-        for f in facetList:
-            objfile.write("f "+" ".join(list(map(str,f["vertices"])))+"\n")
+        for facet in facet_map:
+            objfile.write("f "+" ".join(list(map(str,facet)))+"\n")
 
         objfile.close()
         return 1
