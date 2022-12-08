@@ -84,10 +84,11 @@ def convertFile(filepath, outdir):
             lineNb = lineNb +1    
 
         stlfile.close()
-        setpts = list(set(points))
-        sp = setpts
+        setpts = set(points)
+        sp = list(setpts)
+        sp_map = dict(zip(sp, list(range(len(sp)))))
         #sp = [pt for pt in points if pt in setpts]
-        facet_map = [list(map(lambda v: sp.index(v) + 1, f)) for f in facets]
+        facet_map = [list(map(lambda v: sp_map[v] + 1, f)) for f in facets]
         # Write the target file
         objfile = open(objfilename, "w")
         objfile.write("# File type: ASCII OBJ\n")
