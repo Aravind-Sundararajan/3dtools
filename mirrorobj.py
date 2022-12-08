@@ -10,9 +10,9 @@ def convertFiles(indir, outdir, mirdir):
     if mirdir == "X":
         M[0] = -1
     elif mirdir == "Y":
-        M[0] = -1
+        M[1] = -1
     elif mirdir == "Z":
-        M[0] = -1
+        M[2] = -1
     else:
         pass
         
