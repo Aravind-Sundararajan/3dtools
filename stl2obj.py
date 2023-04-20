@@ -1,120 +1,80 @@
 import argparse
-import os.path
-import sys
+import os
 
 
-def convertFiles(indir: str, outdir: str) -> bool:
-    files = os.listdir(indir)
-    files = [os.path.join(indir, f) for f in files if f.endswith(".stl")]
-    ret = 0
+def convert_files(indir: str, outdir: str) -> None:
+    stl_files = [f for f in os.listdir(indir) if f.endswith(".stl")]
     print("In:", indir)
     print("Out:", outdir)
-    for f in files:
-        print(f)
-        ret += convertFile(f, outdir)
-    print("Successfully converted %d out of %d files." % (ret, len(files)))
-    return True
+    num_converted_files = 0
+    for file in stl_files:
+        stl_file_path = os.path.join(indir, file)
+        obj_file_path = os.path.join(outdir, file.replace(".stl", ".obj"))
+        if os.path.isfile(stl_file_path):
+            if not os.path.isdir(outdir):
+                os.makedirs(outdir)
+            if ".stl" not in file:
+                print_error(stl_file_path, ": The file is not an .stl file.")
+                continue
+            if not os.path.exists(stl_file_path):
+                print_error(stl_file_path, ": The file doesn't exist.")
+                continue
+            if os.path.exists(obj_file_path):
+                print(f"{obj_file_path} already exists, skipping conversion of {stl_file_path}")
+                continue
+            convert_file(stl_file_path, obj_file_path)
+            num_converted_files += 1
+    print(f"Successfully converted {num_converted_files} out of {len(stl_files)} files.")
 
 
-def run(args):
-    convertFiles(args.indir, args.outdir)
-    sys.exit()
+def convert_file(stl_file_path: str, obj_file_path: str) -> None:
+    points = []
+    facets = []
+    normals = []
+
+    with open(stl_file_path, "r") as stl_file:
+        for line in stl_file:
+            tokens = line.strip().split()
+            if not tokens:
+                continue
+            if tokens[0] == "facet":
+                normal = tuple(map(float, tokens[2:]))
+                normals.append(normal)
+                vertices = []
+                while True:
+                    line = stl_file.readline().strip().split()
+                    if not line:
+                        continue
+                    if line[0] == "endfacet":
+                        break
+                    if line[0] == "vertex":
+                        vertex = tuple(map(float, line[1:]))
+                        points.append(vertex)
+                        vertices.append(vertex)
+                facets.append(vertices)
+
+    with open(obj_file_path, "w") as obj_file:
+        obj_file.write("# File type: ASCII OBJ\n")
+        obj_file.write(f"# Generated from {stl_file_path}\n")
+        for pt in set(points):
+            obj_file.write(f"v {' '.join(map(str, pt))}\n")
+        for facet in facets:
+            indices = []
+            for pt in facet:
+                index = points.index(pt) + 1
+                indices.append(str(index))
+            obj_file.write(f"f {' '.join(indices)}\n")
 
 
-def print_help():
-    print("Usage: " + os.path.basename(sys.argv[0]) + " [OPTIONS] filein.stl")
-    print("   Options: -o OUTDIR")
-    print("               Write the output mesh in OUTPUT_FILE")
-    print("               , create 3 points per facet)")
-    sys.exit()
-
-
-def print_error(*str):
-    print("ERROR: ")
-    for i in str:
-        print(i)
-    print("\n")
-    sys.exit()
-
-
-def GetPointId(point: list, pl: list) -> int:
-    for i, pts in enumerate(pl):
-        if pts == point:
-            # obj start to count at 1
-            return i + 1
-    pl.append(point)
-    # obj start to count at 1
-    return len(pl)
-
-
-def convertFile(filepath: str, outdir: str) -> bool:
-    if not os.path.isdir(outdir):
-        os.makedirs(outdir)
-    if os.path.isfile(filepath):
-
-        # verify the argument is an stl file
-        if ".stl" not in filepath:
-            print_error(filepath, ": The file is not an .stl file.")
-        if not os.path.exists(filepath):
-            print_error(filepath, ": The file doesn't exist.")
-
-        # By default the output is the stl filename followed by '.obj'
-        objfilename = filepath.replace(".stl", ".obj")
-
-        points = []
-        facets = []
-        normals = []
-
-        # start reading the STL file
-        stlfile = open(filepath, "r")
-        line = stlfile.readline()
-        line = stlfile.readline()
-        lineNb = 1
-        while line != "":
-            vertices = []
-            tab = line.strip().split()
-            if len(tab) > 0:
-                if "facet" in tab[0]:
-                    normal = tuple(map(float, tab[2:]))
-                    normals.append(normal)
-                    while "endfacet" not in tab[0]:
-                        if "vertex" in tab[0]:
-                            v = tuple(map(float, tab[1:]))
-                            points.append(v)
-                            vertices.append(v)
-                        line = stlfile.readline()
-                        lineNb = lineNb + 1
-                        tab = line.strip().split()
-                    facets.append(vertices)
-            line = stlfile.readline()
-            lineNb = lineNb + 1
-
-        stlfile.close()
-        setpts = set(points)
-        sp = list(setpts)
-        sp_map = dict(zip(sp, list(range(len(sp)))))
-        facet_map = [list(map(lambda v: sp_map[v] + 1, f)) for f in facets]
-        # Write the target file
-        objfile = open(objfilename, "w")
-        objfile.write("# File type: ASCII OBJ\n")
-        objfile.write("# Generated from " + os.path.basename(filepath) + "\n")
-        for pts in sp:
-            objfile.write("v " + " ".join(list(map(str, pts))) + "\n")
-
-        for facet in facet_map:
-            objfile.write("f " + " ".join(list(map(str, facet))) + "\n")
-
-        objfile.close()
-        return True
-    return False
-
-
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description="STL to OBJ converter")
     parser.add_argument("indir", help="Path to input directory.")
     parser.add_argument(
         "--outdir", "-o", default="output", help="Path to output directory."
     )
-    parser.set_defaults(func=run)
     args = parser.parse_args()
-    ret = args.func(args)
+    convert_files(args.indir, args.outdir)
+
+
+if __name__ == "__main__":
+    main()

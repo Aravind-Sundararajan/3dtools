@@ -3,35 +3,34 @@ import os
 import vtk
 import argparse
 
-def convertFile(filepath, outdir):
+def convert_file(filepath, outdir):
     if not os.path.isdir(outdir):
         os.makedirs(outdir)
     if os.path.isfile(filepath):
         basename = os.path.basename(filepath)
-        print("Copying file:", basename)
+        print(f"Copying file: {basename}")
         basename = os.path.splitext(basename)[0]
-        outfile = os.path.join(outdir, basename+".stl")
+        outfile = os.path.join(outdir, f"{basename}.stl")
         reader = vtk.vtkXMLPolyDataReader()
         reader.SetFileName(filepath)
         reader.Update()
         writer = vtk.vtkSTLWriter()
         writer.SetInputConnection(reader.GetOutputPort())
         writer.SetFileName(outfile)
-        return writer.Write()==1
+        return writer.Write() == 1
     return False
 
-def convertFiles(indir, outdir):
-    files = os.listdir(indir)
-    files = [ os.path.join(indir,f) for f in files if f.endswith('.vtp') ]
-    ret = 0
-    print("In:", indir)
-    print("Out:", outdir)
+def convert_files(indir, outdir):
+    files = [os.path.join(indir, f) for f in os.listdir(indir) if f.endswith('.vtp')]
+    success_count = 0
+    print(f"In: {indir}")
+    print(f"Out: {outdir}")
     for f in files:
-        ret += convertFile(f, outdir)
-    print("Successfully converted %d out of %d files." % (ret, len(files)))
+        success_count += convert_file(f, outdir)
+    print(f"Successfully converted {success_count} out of {len(files)} files.")
 
 def run(args):
-    convertFiles(args.indir, args.outdir)
+    convert_files(args.indir, args.outdir)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="VTP to STL converter")

@@ -1,113 +1,85 @@
-import sys      
-import string   
-import os.path  
-import getopt
+import sys
+import os.path
 import argparse
 
-def convertFiles(indir, outdir, mirdir):
 
-    M = [1, 1, 1]
-    if mirdir == "X":
-        M[0] = -1
-    elif mirdir == "Y":
-        M[1] = -1
-    elif mirdir == "Z":
-        M[2] = -1
-    else:
-        pass
-        
-    files = os.listdir(indir)
-    files = [ os.path.join(indir,f) for f in files if f.endswith('.obj') ]
-    ret = 0
-    print("In:", indir)
-    print("Out:", outdir)
-    for f in files:
-        print(f)
-        ret += convertFile(f, outdir, M)
-    print("Successfully mirrored %d out of %d files." % (ret, len(files)))
+def convert_file(filepath, outdir, mirror_axis):
+    """
+    Converts a single OBJ file by mirroring it along the specified axis
+    and writes the result to a new file in the specified output directory.
+    """
+    if not os.path.isfile(filepath):
+        print(f"ERROR: The file {filepath} doesn't exist.")
+        return False
+    if not filepath.endswith('.obj'):
+        print(f"ERROR: {filepath} is not an OBJ file.")
+        return False
 
-def run(args):
-    convertFiles(args.indir, args.outdir, args.axis)
+    # By default, the output filename is the input filename with "_Mirror" appended
+    objfilename = os.path.basename(filepath).replace(".obj", "_Mirror.obj")
+    outpath = os.path.join(outdir, objfilename)
 
-def print_help():
-    print("Usage: "+os.path.basename(sys.argv[0])+" [OPTIONS] filein.obj")
-    print("   Options: -o OUTDIR")
-    print("               Write the output mesh in OUTPUT_FILE")
-    print("               , create 3 points per facet)")
-    sys.exit()
+    # Read the input file
+    vertices = []
+    faces = []
+    with open(filepath, "r") as f:
+        for line in f:
+            tokens = line.strip().split()
+            if len(tokens) == 0:
+                continue
+            if tokens[0] == "v":
+                vertices.append([float(x) for x in tokens[1:]])
+            elif tokens[0] == "f":
+                faces.append([int(x.split("/")[0]) for x in tokens[1:]])
 
-def print_error(*str):
-    print("ERROR: "),
-    for i in str:
-        print(i),
-    print("\n")
-    sys.exit()
+    # Mirror the vertices along the specified axis
+    mirror_sign = [-1 if axis == mirror_axis.upper() else 1 for axis in "xyz"]
+    mirrored_vertices = [[mirror_sign[i] * v[i] for i in range(3)] for v in vertices]
 
-def GetPointId(point,pl):
-    for i,pts in enumerate(pl):
-        if pts == point :
-            #obj start to count at 1
-            return i+1
-    pl.append(point)
-    #obj start to count at 1
-    return len(pl)
+    # Write the output file
+    with open(outpath, "w") as f:
+        f.write("# File type: ASCII OBJ\n")
+        f.write("# Generated from " + os.path.basename(filepath) + "\n")
+        for v in mirrored_vertices:
+            f.write("v " + " ".join(str(x) for x in v) + "\n")
+        for face in faces:
+            f.write("f " + " ".join(str(x) for x in face) + "\n")
 
-def convertFile(filepath, outdir, M):
-    
-    
-    if not os.path.isdir(outdir):
+    return True
+
+
+def convert_files(indir, outdir, mirror_axis):
+    """
+    Converts all OBJ files in the specified input directory by mirroring them along the specified axis
+    and writes the results to new files in the specified output directory.
+    """
+    if not os.path.isdir(indir):
+        print(f"ERROR: The input directory {indir} doesn't exist.")
+        return 0
+
+    if not os.path.exists(outdir):
         os.makedirs(outdir)
-    if os.path.isfile(filepath):
 
-        # verify the argument is an stl file
-        if ".obj" not in filepath:
-            print_error(filepath,": The file is not an .obj file.")
-        if not os.path.exists(filepath):
-            print_error(filepath,": The file doesn't exist.")
+    count = 0
+    for filename in os.listdir(indir):
+        if not filename.endswith('.obj'):
+            continue
+        filepath = os.path.join(indir, filename)
+        if convert_file(filepath, outdir, mirror_axis):
+            count += 1
 
-        # By default the output is the stl filename followed by '.obj'
-        objfilename = filepath.replace(".obj","_Mirror.obj")
-        
-        facets = []
-        vertices = []
+    print(f"Successfully mirrored {count} out of {len(os.listdir(indir))} files.")
+    return count
 
-        # start reading the STL file
-        objfile = open(filepath, "r")
-        line = objfile.readline()
-        line = objfile.readline()
-        lineNb = 1
-        while line != "":
-            tab = line.strip().split()       
-            if len(tab) > 0:
-                if "v" in tab[0]:
-                    V = tuple(map(float,tab[1:]))
-                    v_mir = [v*m for v,m in zip(V,M)]
-                    vertices.append(v_mir)
-                elif "f" in tab[0]:
-                    facets.append(tuple(map(int,tab[1:])))
-            line = objfile.readline()
 
-        objfile.close()
-        # Write the target file
-        objfile = open(objfilename, "w")
-        objfile.write("# File type: ASCII OBJ\n")
-        objfile.write("# Generated from "+os.path.basename(filepath)+"\n")
-        for pts in vertices:
-            objfile.write("v "+" ".join(list(map(str,pts)))+"\n")
-
-        for facet in facets:
-            objfile.write("f "+" ".join(list(map(str,facet)))+"\n")
-
-        objfile.close()
-        return 1
-    return False
-
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser(description="OBJ mirror")
     parser.add_argument('indir', help="Path to input directory.")
     parser.add_argument('--outdir', '-o', default='output', help="Path to output directory.")
     parser.add_argument('--axis', '-a', default='none', help="axis (X/Y/Z)")
-    parser.set_defaults(func=run)
     args = parser.parse_args()
-    ret = args.func(args)
-    #convertFiles("./.", "./.")
+    convert_files(args.indir, args.outdir, args.axis.upper())
+
+
+if __name__ == '__main__':
+    main()
