@@ -3,7 +3,20 @@ import os
 import vtk
 import argparse
 
+import os
+import vtk
+
 def convert_file(filepath, outdir):
+    """
+    Converts a VTK XML file to an STL file and saves it to a specified directory.
+
+    Args:
+    filepath (str): The path to the VTK XML file to convert.
+    outdir (str): The path to the directory where the converted STL file should be saved.
+
+    Returns:
+    bool: True if the conversion and saving were successful, False otherwise.
+    """
     if not os.path.isdir(outdir):
         os.makedirs(outdir)
     if os.path.isfile(filepath):
@@ -20,7 +33,19 @@ def convert_file(filepath, outdir):
         return writer.Write() == 1
     return False
 
+import os
+
 def convert_files(indir, outdir):
+    """
+    Converts all VTK XML files in a directory to STL files and saves them to a specified directory.
+
+    Args:
+    indir (str): The path to the directory containing the VTK XML files to convert.
+    outdir (str): The path to the directory where the converted STL files should be saved.
+
+    Returns:
+    None
+    """
     files = [os.path.join(indir, f) for f in os.listdir(indir) if f.endswith('.vtp')]
     success_count = 0
     print(f"In: {indir}")
@@ -28,6 +53,7 @@ def convert_files(indir, outdir):
     for f in files:
         success_count += convert_file(f, outdir)
     print(f"Successfully converted {success_count} out of {len(files)} files.")
+
 
 def run(args):
     convert_files(args.indir, args.outdir)

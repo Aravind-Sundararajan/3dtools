@@ -3,6 +3,16 @@ import os
 
 
 def convert_files(indir: str, outdir: str) -> None:
+    """
+    Converts all STL files in a directory to OBJ files and saves them to a specified directory.
+
+    Args:
+    indir (str): The path to the directory containing the STL files to convert.
+    outdir (str): The path to the directory where the converted OBJ files should be saved.
+
+    Returns:
+    None
+    """
     stl_files = [f for f in os.listdir(indir) if f.endswith(".stl")]
     print("In:", indir)
     print("Out:", outdir)
@@ -14,10 +24,10 @@ def convert_files(indir: str, outdir: str) -> None:
             if not os.path.isdir(outdir):
                 os.makedirs(outdir)
             if ".stl" not in file:
-                print_error(stl_file_path, ": The file is not an .stl file.")
+                print(stl_file_path, ": The file is not an .stl file.")
                 continue
             if not os.path.exists(stl_file_path):
-                print_error(stl_file_path, ": The file doesn't exist.")
+                print(stl_file_path, ": The file doesn't exist.")
                 continue
             if os.path.exists(obj_file_path):
                 print(f"{obj_file_path} already exists, skipping conversion of {stl_file_path}")
@@ -28,6 +38,16 @@ def convert_files(indir: str, outdir: str) -> None:
 
 
 def convert_file(stl_file_path: str, obj_file_path: str) -> None:
+    """
+    Converts an STL file to an OBJ file.
+
+    Args:
+    stl_file_path (str): The path to the STL file to convert.
+    obj_file_path (str): The path to the OBJ file where the converted file should be saved.
+
+    Returns:
+    None
+    """
     points = []
     facets = []
     normals = []
