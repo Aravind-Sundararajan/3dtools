@@ -42,7 +42,7 @@ def convert_file(filepath, outdir, mirror_axis):
                 faces.append([int(x.split("/")[0]) for x in tokens[1:]])
 
     # Mirror the vertices along the specified axis
-    mirror_sign = [-1 if axis == mirror_axis.upper() else 1 for axis in "xyz"]
+    mirror_sign = [-1 if axis == mirror_axis.upper() else 1 for axis in "XYZ"]
     mirrored_vertices = [[mirror_sign[i] * v[i] for i in range(3)] for v in vertices]
 
     # Write the output file
@@ -80,6 +80,8 @@ def convert_files(indir, outdir, mirror_axis):
 
     count = 0
     for filename in os.listdir(indir):
+        if filename.endswith('_Mirror.obj'):
+            continue
         if not filename.endswith('.obj'):
             continue
         filepath = os.path.join(indir, filename)
