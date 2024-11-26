@@ -1,21 +1,16 @@
-api.mirrorobj package
-=====================
+mirrorobj package
+=================
 
-Submodules
-----------
 
-api.mirrorobj.mirrorobj module
-------------------------------
-
-.. automodule:: api.mirrorobj.mirrorobj
+.. automodule:: py3dtools.mirrorobj.mirrorobj
    :members:
    :undoc-members:
    :show-inheritance:
 
-Module contents
+Module Contents
 ---------------
 
-.. automodule:: api.mirrorobj
+.. automodule:: py3dtools.mirrorobj
    :members:
    :undoc-members:
    :show-inheritance:

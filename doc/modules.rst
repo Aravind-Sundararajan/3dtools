@@ -1,7 +1,7 @@
-api
-===
+py3dtools
+=========
 
 .. toctree::
    :maxdepth: 4
 
-   api
+   py3dtools.rst

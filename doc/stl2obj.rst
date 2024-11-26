@@ -1,13 +1,7 @@
-api.stl2obj package
-===================
+stl2obj package
+===============
 
-Submodules
-----------
-
-api.stl2obj.stl2obj module
---------------------------
-
-.. automodule:: api.stl2obj.stl2obj
+.. automodule:: py3dtools.stl2obj.stl2obj
    :members:
    :undoc-members:
    :show-inheritance:
@@ -15,7 +9,7 @@ api.stl2obj.stl2obj module
 Module contents
 ---------------
 
-.. automodule:: api.stl2obj
+.. automodule:: py3dtools.stl2obj
    :members:
    :undoc-members:
    :show-inheritance:

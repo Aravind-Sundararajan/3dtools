@@ -10,3 +10,9 @@ Welcome to 3dtools's documentation!
    :maxdepth: 2
 
    modules.rst
+   dependencies.rst
+   exercises.rst
+   purpose.rst
+   usage.rst
+   credit.rst
+

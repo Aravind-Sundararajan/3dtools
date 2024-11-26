@@ -1,5 +1,5 @@
-api package
-===========
+py3dtools package
+=================
 
 Subpackages
 -----------
@@ -7,14 +7,14 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   mirrorobj
-   stl2obj
-   vtp2stl
+   mirrorobj.rst
+   stl2obj.rst
+   vtp2stl.rst
 
-Module contents
+Module Contents
 ---------------
 
-.. automodule:: api
+.. automodule:: py3dtools
    :members:
    :undoc-members:
    :show-inheritance:
