@@ -1,5 +1,0 @@
-
-
-Credit and inspiration
-======================
-

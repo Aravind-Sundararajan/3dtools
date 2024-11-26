@@ -11,8 +11,5 @@ Welcome to 3dtools's documentation!
 
    modules.rst
    dependencies.rst
-   exercises.rst
    purpose.rst
-   usage.rst
-   credit.rst
 
