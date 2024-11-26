@@ -7,9 +7,9 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   api.mirrorobj
-   api.stl2obj
-   api.vtp2stl
+   mirrorobj
+   stl2obj
+   vtp2stl
 
 Module contents
 ---------------
