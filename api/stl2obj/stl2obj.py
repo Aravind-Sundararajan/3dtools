@@ -2,7 +2,7 @@ import argparse
 import os
 
 
-def convert_files(indir: str, outdir: str) -> None:
+def convert_files(indir: str, outdir: str) -> bool:
     """
     Converts all STL files in a directory to OBJ files and saves them to a specified directory.
 
@@ -11,7 +11,7 @@ def convert_files(indir: str, outdir: str) -> None:
     outdir (str): The path to the directory where the converted OBJ files should be saved.
 
     Returns:
-    None
+    True when the conversion and saving are successful.
     """
     stl_files = [f for f in os.listdir(indir) if f.endswith(".stl")]
     print("In:", indir)
@@ -30,14 +30,17 @@ def convert_files(indir: str, outdir: str) -> None:
                 print(stl_file_path, ": The file doesn't exist.")
                 continue
             if os.path.exists(obj_file_path):
-                print(f"{obj_file_path} already exists, skipping conversion of {stl_file_path}")
+                print(
+                    f"{obj_file_path} already exists, skipping conversion of {stl_file_path}")
                 continue
             convert_file(stl_file_path, obj_file_path)
             num_converted_files += 1
-    print(f"Successfully converted {num_converted_files} out of {len(stl_files)} files.")
+    print(
+        f"Successfully converted {num_converted_files} out of {len(stl_files)} files.")
+    return True
 
 
-def convert_file(stl_file_path: str, obj_file_path: str) -> None:
+def convert_file(stl_file_path: str, obj_file_path: str) -> bool:
     """
     Converts an STL file to an OBJ file.
 
@@ -46,7 +49,7 @@ def convert_file(stl_file_path: str, obj_file_path: str) -> None:
     obj_file_path (str): The path to the OBJ file where the converted file should be saved.
 
     Returns:
-    None
+    True if the conversion and saving were successful.
     """
     points = []
     facets = []
@@ -84,6 +87,7 @@ def convert_file(stl_file_path: str, obj_file_path: str) -> None:
                 index = points.index(pt) + 1
                 indices.append(str(index))
             obj_file.write(f"f {' '.join(indices)}\n")
+    return True
 
 
 def main():

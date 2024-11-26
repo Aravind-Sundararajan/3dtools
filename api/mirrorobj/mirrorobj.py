@@ -3,7 +3,7 @@ import os.path
 import argparse
 
 
-def convert_file(filepath, outdir, mirror_axis):
+def convert_file(filepath, outdir, mirror_axis) -> bool:
     """
     Converts a single OBJ file by mirroring it along the specified axis and
     writes the result to a new file in the specified output directory.
@@ -43,7 +43,8 @@ def convert_file(filepath, outdir, mirror_axis):
 
     # Mirror the vertices along the specified axis
     mirror_sign = [-1 if axis == mirror_axis.upper() else 1 for axis in "XYZ"]
-    mirrored_vertices = [[mirror_sign[i] * v[i] for i in range(3)] for v in vertices]
+    mirrored_vertices = [[mirror_sign[i] * v[i]
+                          for i in range(3)] for v in vertices]
 
     # Write the output file
     with open(outpath, "w") as f:
@@ -57,7 +58,7 @@ def convert_file(filepath, outdir, mirror_axis):
     return True
 
 
-def convert_files(indir, outdir, mirror_axis):
+def convert_files(indir, outdir, mirror_axis) -> int:
     """
     Converts all OBJ files in a specified directory by mirroring it along the specified axis and
     writes the result to a new file in the specified output directory.
@@ -88,14 +89,16 @@ def convert_files(indir, outdir, mirror_axis):
         if convert_file(filepath, outdir, mirror_axis):
             count += 1
 
-    print(f"Successfully mirrored {count} out of {len(os.listdir(indir))} files.")
+    print(
+        f"Successfully mirrored {count} out of {len(os.listdir(indir))} files.")
     return count
 
 
 def main():
     parser = argparse.ArgumentParser(description="OBJ mirror")
     parser.add_argument('indir', help="Path to input directory.")
-    parser.add_argument('--outdir', '-o', default='output', help="Path to output directory.")
+    parser.add_argument('--outdir', '-o', default='output',
+                        help="Path to output directory.")
     parser.add_argument('--axis', '-a', default='none', help="axis (X/Y/Z)")
     args = parser.parse_args()
     convert_files(args.indir, args.outdir, args.axis.upper())
