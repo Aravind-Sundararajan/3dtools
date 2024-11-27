@@ -1,0 +1,6 @@
+[tool.setuptools.packages.find]
+include = [
+    "stl2obj",
+    "vtp2stl",
+    "mirrorobj",
+]

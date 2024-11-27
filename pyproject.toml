@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 
 [project]
-name = "py3dtools"
+name = "py3dtools_risingsunz"
 version = "0.0.1"
 authors = [
   { name="Aravind Sundararajan", email="aravind.sundararajan@protonmail.com" },
@@ -22,12 +22,10 @@ classifiers = [
 py-modules = ['py3dtools']
 
 [tool.setuptools.packages.find]
+where = ["py3dtools"]
 include = [
-    "vtp2stl",
-    "stl2obj",
-    "mirrorobj",
+    "py3dtools",
 ]
-namespaces = false
 
 
 [project.urls]
