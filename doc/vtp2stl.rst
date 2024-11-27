@@ -6,10 +6,3 @@ vtp2stl package
    :undoc-members:
    :show-inheritance:
 
-Module Contents
----------------
-
-.. automodule:: py3dtools.vtp2stl
-   :members:
-   :undoc-members:
-   :show-inheritance:
