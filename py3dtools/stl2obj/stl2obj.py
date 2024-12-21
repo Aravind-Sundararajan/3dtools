@@ -3,7 +3,7 @@ import os.path
 import sys
 
 
-def convertFiles(indir: str, outdir: str) -> bool:
+def convert_files(indir: str, outdir: str) -> bool:
     files = os.listdir(indir)
     files = [os.path.join(indir, f) for f in files if f.endswith(".stl")]
     ret = 0
@@ -17,7 +17,7 @@ def convertFiles(indir: str, outdir: str) -> bool:
 
 
 def run(args):
-    convertFiles(args.indir, args.outdir)
+    convert_files(args.indir, args.outdir)
     sys.exit()
 
 
