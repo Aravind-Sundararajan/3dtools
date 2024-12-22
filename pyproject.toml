@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "py3dtools_risingsunz"
-version = "0.0.1"
+version = "0.0.3"
 authors = [
   { name="Aravind Sundararajan", email="aravind.sundararajan@protonmail.com" },
 ]
@@ -24,9 +24,12 @@ py-modules = ['py3dtools']
 [tool.setuptools.packages.find]
 where = ["py3dtools"]
 include = [
-    "py3dtools",
 ]
 
+[project.scripts]
+vtp2stl = "py3dtools.vtp2stl:main"
+stl2obj = "py3dtools.stl2obj:main"
+mirrorobj = "py3dtools.mirrorobj:main"
 
 [project.urls]
 Homepage = "https://github.com/Aravind-Sundararajan/3dtools"
