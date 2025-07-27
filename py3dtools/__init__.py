@@ -1,16 +1,29 @@
-__version__='0.0.3'
+"""py3dtools - 3D file format conversion tools."""
 
-__all__ = ['get_vtp2stl', 'get_stl2obj', 'get_mirrorobj']
+__version__ = '0.0.4'
 
+# Import converters for easy access
+from .converters import (
+    VTPToSTLConverter, STLToOBJConverter, OBJMirrorConverter,
+    STLToVTPConverter, OBJToSTLConverter, OBJToVTPConverter,
+    MeshDecimatorConverter
+)
 
-def get_vtp2stl():
-    from . import vtp2stl
-    return vtp2stl
+# Import core utilities
+from .core import BaseConverter, ensure_directory_exists, validate_file_extension
 
-def get_stl2obj():
-    from . import stl2obj
-    return stl2obj
+__all__ = [
+    # Converters
+    'VTPToSTLConverter',
+    'STLToOBJConverter',
+    'OBJMirrorConverter',
+    'STLToVTPConverter',
+    'OBJToSTLConverter',
+    'OBJToVTPConverter',
+    'MeshDecimatorConverter',
 
-def get_mirrorobj():
-    from . import mirrorobj
-    return mirrorobj
+    # Core utilities
+    'BaseConverter',
+    'ensure_directory_exists',
+    'validate_file_extension',
+]
