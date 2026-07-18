@@ -12,7 +12,7 @@ class OBJToSTLConverter(BaseConverter):
 
     def __init__(self):
         """Initialize the OBJ to STL converter."""
-        super().__init__('.obj', '.stl')
+        super().__init__(".obj", ".stl")
 
     def convert_single_file(self, input_file: str, output_dir: str) -> bool:
         """Convert a single OBJ file to STL format.
@@ -27,8 +27,7 @@ class OBJToSTLConverter(BaseConverter):
         try:
             self.validate_input_file(input_file)
 
-            output_file = create_output_filename(
-                input_file, output_dir, '.stl')
+            output_file = create_output_filename(input_file, output_dir, ".stl")
 
             # Create VTK reader for OBJ files
             reader = vtk.vtkOBJReader()
@@ -46,7 +45,8 @@ class OBJToSTLConverter(BaseConverter):
             if success:
                 print(
                     f"Converted: {os.path.basename(input_file)} -> "
-                    f"{os.path.basename(output_file)}")
+                    f"{os.path.basename(output_file)}"
+                )
 
             return success
 

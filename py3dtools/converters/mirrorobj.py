@@ -1,7 +1,6 @@
 """OBJ file mirroring converter."""
 
 import os
-from typing import List, Tuple
 
 from ..core.converters import BaseConverter
 from ..core.file_utils import create_output_filename
@@ -10,16 +9,16 @@ from ..core.file_utils import create_output_filename
 class OBJMirrorConverter(BaseConverter):
     """Mirrors OBJ files along specified axes."""
 
-    def __init__(self, mirror_axis: str = 'X'):
+    def __init__(self, mirror_axis: str = "X"):
         """Initialize the OBJ mirror converter.
 
         Args:
             mirror_axis: Axis to mirror along ('X', 'Y', or 'Z')
         """
-        super().__init__('.obj', '_mirror.obj')
+        super().__init__(".obj", "_mirror.obj")
         self.mirror_axis = mirror_axis.upper()
 
-        if self.mirror_axis not in ['X', 'Y', 'Z']:
+        if self.mirror_axis not in ["X", "Y", "Z"]:
             raise ValueError("mirror_axis must be 'X', 'Y', or 'Z'")
 
     def convert_single_file(self, input_file: str, output_dir: str) -> bool:
@@ -36,11 +35,10 @@ class OBJMirrorConverter(BaseConverter):
             self.validate_input_file(input_file)
 
             # Skip files that are already mirrored
-            if '_mirror.obj' in input_file.lower():
+            if "_mirror.obj" in input_file.lower():
                 return False
 
-            output_file = create_output_filename(
-                input_file, output_dir, '_mirror.obj')
+            output_file = create_output_filename(input_file, output_dir, "_mirror.obj")
 
             # Parse OBJ file
             vertices, faces = self._parse_obj_file(input_file)
@@ -49,19 +47,21 @@ class OBJMirrorConverter(BaseConverter):
             mirrored_vertices = self._mirror_vertices(vertices)
 
             # Write mirrored OBJ file
-            self._write_obj_file(
-                output_file, mirrored_vertices, faces, input_file)
+            self._write_obj_file(output_file, mirrored_vertices, faces, input_file)
 
             print(
                 f"Mirrored: {os.path.basename(input_file)} -> "
-                f"{os.path.basename(output_file)}")
+                f"{os.path.basename(output_file)}"
+            )
             return True
 
         except Exception as e:
             print(f"Error mirroring {input_file}: {e}")
             return False
 
-    def _parse_obj_file(self, filepath: str) -> Tuple[List[List[float]], List[List[int]]]:
+    def _parse_obj_file(
+        self, filepath: str
+    ) -> tuple[list[list[float]], list[list[int]]]:
         """Parse an OBJ file and extract vertices and faces.
 
         Args:
@@ -73,7 +73,7 @@ class OBJMirrorConverter(BaseConverter):
         vertices = []
         faces = []
 
-        with open(filepath, "r") as f:
+        with open(filepath) as f:
             for line in f:
                 tokens = line.strip().split()
                 if len(tokens) == 0:
@@ -90,7 +90,7 @@ class OBJMirrorConverter(BaseConverter):
 
         return vertices, faces
 
-    def _mirror_vertices(self, vertices: List[List[float]]) -> List[List[float]]:
+    def _mirror_vertices(self, vertices: list[list[float]]) -> list[list[float]]:
         """Mirror vertices along the specified axis.
 
         Args:
@@ -110,8 +110,13 @@ class OBJMirrorConverter(BaseConverter):
 
         return mirrored_vertices
 
-    def _write_obj_file(self, output_file: str, vertices: List[List[float]],
-                        faces: List[List[int]], source_file: str) -> None:
+    def _write_obj_file(
+        self,
+        output_file: str,
+        vertices: list[list[float]],
+        faces: list[list[int]],
+        source_file: str,
+    ) -> None:
         """Write vertices and faces to an OBJ file.
 
         Args:

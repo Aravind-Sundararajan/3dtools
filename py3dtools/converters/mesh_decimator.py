@@ -17,7 +17,7 @@ class MeshDecimatorConverter(BaseConverter):
             target_reduction: Target reduction ratio (0.0 to 1.0, where 1.0 = 100% reduction)
             preserve_topology: Whether to preserve mesh topology during decimation
         """
-        super().__init__('.vtp', '_decimated.vtp')
+        super().__init__(".vtp", "_decimated.vtp")
         self.target_reduction = max(0.0, min(1.0, target_reduction))
         self.preserve_topology = preserve_topology
 
@@ -35,7 +35,8 @@ class MeshDecimatorConverter(BaseConverter):
             self.validate_input_file(input_file)
 
             output_file = create_output_filename(
-                input_file, output_dir, '_decimated.vtp')
+                input_file, output_dir, "_decimated.vtp"
+            )
 
             # Read the input mesh
             mesh = self._read_mesh(input_file)
@@ -56,10 +57,12 @@ class MeshDecimatorConverter(BaseConverter):
                 reduction = (original_cells - decimated_cells) / original_cells
                 print(
                     f"Decimated: {os.path.basename(input_file)} -> "
-                    f"{os.path.basename(output_file)}")
+                    f"{os.path.basename(output_file)}"
+                )
                 print(
                     f"  Reduction: {reduction:.1%} "
-                    f"({original_cells} -> {decimated_cells} cells)")
+                    f"({original_cells} -> {decimated_cells} cells)"
+                )
 
             return success
 
@@ -77,11 +80,11 @@ class MeshDecimatorConverter(BaseConverter):
             VTK PolyData object or None if reading failed
         """
         # Determine file type and use appropriate reader
-        if filepath.lower().endswith('.vtp'):
+        if filepath.lower().endswith(".vtp"):
             reader = vtk.vtkXMLPolyDataReader()
-        elif filepath.lower().endswith('.stl'):
+        elif filepath.lower().endswith(".stl"):
             reader = vtk.vtkSTLReader()
-        elif filepath.lower().endswith('.obj'):
+        elif filepath.lower().endswith(".obj"):
             reader = vtk.vtkOBJReader()
         else:
             print(f"Unsupported file format: {filepath}")
@@ -132,11 +135,11 @@ class MeshDecimatorConverter(BaseConverter):
             True if writing was successful, False otherwise
         """
         # Determine output format and use appropriate writer
-        if output_file.lower().endswith('.vtp'):
+        if output_file.lower().endswith(".vtp"):
             writer = vtk.vtkXMLPolyDataWriter()
-        elif output_file.lower().endswith('.stl'):
+        elif output_file.lower().endswith(".stl"):
             writer = vtk.vtkSTLWriter()
-        elif output_file.lower().endswith('.obj'):
+        elif output_file.lower().endswith(".obj"):
             writer = vtk.vtkOBJWriter()
         else:
             print(f"Unsupported output format: {output_file}")
@@ -164,7 +167,7 @@ class MeshDecimatorConverter(BaseConverter):
         ensure_directory_exists(output_dir)
 
         # Find all supported mesh files
-        supported_extensions = ['.vtp', '.stl', '.obj']
+        supported_extensions = [".vtp", ".stl", ".obj"]
         input_files = []
         for ext in supported_extensions:
             input_files.extend(self._get_files_with_extension(input_dir, ext))
@@ -186,11 +189,11 @@ class MeshDecimatorConverter(BaseConverter):
                 else:
                     print(f"✗ Failed: {os.path.basename(input_file)}")
             except Exception as e:
-                print(
-                    f"✗ Error decimating {os.path.basename(input_file)}: {e}")
+                print(f"✗ Error decimating {os.path.basename(input_file)}: {e}")
 
         print(
-            f"Successfully decimated {success_count} out of {len(input_files)} files.")
+            f"Successfully decimated {success_count} out of {len(input_files)} files."
+        )
         return success_count
 
     def _get_files_with_extension(self, directory_path: str, extension: str):

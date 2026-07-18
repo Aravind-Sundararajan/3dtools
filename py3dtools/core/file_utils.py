@@ -2,7 +2,6 @@
 
 import os
 from pathlib import Path
-from typing import List, Optional
 
 from .exceptions import ValidationError, FileNotFoundError
 
@@ -17,7 +16,7 @@ def ensure_directory_exists(directory_path: str) -> None:
         os.makedirs(directory_path)
 
 
-def validate_file_extension(file_path: str, expected_extensions: List[str]) -> None:
+def validate_file_extension(file_path: str, expected_extensions: list[str]) -> None:
     """Validate that a file has one of the expected extensions.
 
     Args:
@@ -35,7 +34,7 @@ def validate_file_extension(file_path: str, expected_extensions: List[str]) -> N
         )
 
 
-def get_files_with_extension(directory_path: str, extension: str) -> List[str]:
+def get_files_with_extension(directory_path: str, extension: str) -> list[str]:
     """Get all files in a directory with a specific extension.
 
     Args:

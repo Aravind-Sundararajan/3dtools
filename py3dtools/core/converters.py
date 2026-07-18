@@ -1,10 +1,9 @@
 """Base converter class for all file format converters."""
 
 from abc import ABC, abstractmethod
-from typing import List, Optional
 import os
 
-from .exceptions import ConversionError
+from .exceptions import ValidationError
 from .file_utils import ensure_directory_exists, get_files_with_extension
 
 
@@ -50,11 +49,11 @@ class BaseConverter(ABC):
                 else:
                     print(f"✗ Failed: {os.path.basename(input_file)}")
             except Exception as e:
-                print(
-                    f"✗ Error converting {os.path.basename(input_file)}: {e}")
+                print(f"✗ Error converting {os.path.basename(input_file)}: {e}")
 
         print(
-            f"Successfully converted {success_count} out of {len(input_files)} files.")
+            f"Successfully converted {success_count} out of {len(input_files)} files."
+        )
         return success_count
 
     @abstractmethod

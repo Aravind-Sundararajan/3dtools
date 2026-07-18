@@ -9,11 +9,11 @@ from .obj2vtp import OBJToVTPConverter
 from .mesh_decimator import MeshDecimatorConverter
 
 __all__ = [
-    'VTPToSTLConverter',
-    'STLToOBJConverter',
-    'OBJMirrorConverter',
-    'STLToVTPConverter',
-    'OBJToSTLConverter',
-    'OBJToVTPConverter',
-    'MeshDecimatorConverter'
+    "VTPToSTLConverter",
+    "STLToOBJConverter",
+    "OBJMirrorConverter",
+    "STLToVTPConverter",
+    "OBJToSTLConverter",
+    "OBJToVTPConverter",
+    "MeshDecimatorConverter",
 ]

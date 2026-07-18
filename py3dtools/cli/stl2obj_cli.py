@@ -17,5 +17,5 @@ def main():
     return converter.convert_directory(args.indir, args.outdir)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

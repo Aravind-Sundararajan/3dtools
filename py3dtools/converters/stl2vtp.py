@@ -12,7 +12,7 @@ class STLToVTPConverter(BaseConverter):
 
     def __init__(self):
         """Initialize the STL to VTP converter."""
-        super().__init__('.stl', '.vtp')
+        super().__init__(".stl", ".vtp")
 
     def convert_single_file(self, input_file: str, output_dir: str) -> bool:
         """Convert a single STL file to VTP format.
@@ -27,8 +27,7 @@ class STLToVTPConverter(BaseConverter):
         try:
             self.validate_input_file(input_file)
 
-            output_file = create_output_filename(
-                input_file, output_dir, '.vtp')
+            output_file = create_output_filename(input_file, output_dir, ".vtp")
 
             # Create VTK reader for STL files
             reader = vtk.vtkSTLReader()
@@ -46,7 +45,8 @@ class STLToVTPConverter(BaseConverter):
             if success:
                 print(
                     f"Converted: {os.path.basename(input_file)} -> "
-                    f"{os.path.basename(output_file)}")
+                    f"{os.path.basename(output_file)}"
+                )
 
             return success
 

@@ -1,7 +1,6 @@
 """STL to OBJ file format converter."""
 
 import os
-from typing import List, Tuple
 
 from ..core.converters import BaseConverter
 from ..core.file_utils import create_output_filename
@@ -12,7 +11,7 @@ class STLToOBJConverter(BaseConverter):
 
     def __init__(self):
         """Initialize the STL to OBJ converter."""
-        super().__init__('.stl', '.obj')
+        super().__init__(".stl", ".obj")
 
     def convert_single_file(self, input_file: str, output_dir: str) -> bool:
         """Convert a single STL file to OBJ format.
@@ -27,8 +26,7 @@ class STLToOBJConverter(BaseConverter):
         try:
             self.validate_input_file(input_file)
 
-            output_file = create_output_filename(
-                input_file, output_dir, '.obj')
+            output_file = create_output_filename(input_file, output_dir, ".obj")
 
             # Parse STL file
             vertices, faces = self._parse_stl_file(input_file)
@@ -38,14 +36,17 @@ class STLToOBJConverter(BaseConverter):
 
             print(
                 f"Converted: {os.path.basename(input_file)} -> "
-                f"{os.path.basename(output_file)}")
+                f"{os.path.basename(output_file)}"
+            )
             return True
 
         except Exception as e:
             print(f"Error converting {input_file}: {e}")
             return False
 
-    def _parse_stl_file(self, filepath: str) -> Tuple[List[Tuple[float, float, float]], List[List[int]]]:
+    def _parse_stl_file(
+        self, filepath: str
+    ) -> tuple[list[tuple[float, float, float]], list[list[int]]]:
         """Parse an STL file and extract vertices and faces.
 
         Args:
@@ -57,7 +58,7 @@ class STLToOBJConverter(BaseConverter):
         points = []
         facets = []
 
-        with open(filepath, "r") as stlfile:
+        with open(filepath) as stlfile:
             # Skip header lines
             stlfile.readline()  # solid name
             stlfile.readline()  # facet normal
@@ -71,7 +72,7 @@ class STLToOBJConverter(BaseConverter):
                     # Read facet data
                     while line and "endfacet" not in tab[0]:
                         if "vertex" in tab[0]:
-                            vertex = tuple(map(float, tab[1:]))
+                            vertex = (float(tab[1]), float(tab[2]), float(tab[3]))
                             points.append(vertex)
                             vertices.append(vertex)
 
@@ -85,8 +86,7 @@ class STLToOBJConverter(BaseConverter):
 
         # Deduplicate vertices and create face indices
         unique_vertices = list(set(points))
-        vertex_map = {vertex: idx + 1 for idx,
-                      vertex in enumerate(unique_vertices)}
+        vertex_map = {vertex: idx + 1 for idx, vertex in enumerate(unique_vertices)}
 
         faces = []
         for facet in facets:
@@ -95,8 +95,13 @@ class STLToOBJConverter(BaseConverter):
 
         return unique_vertices, faces
 
-    def _write_obj_file(self, output_file: str, vertices: List[Tuple[float, float, float]],
-                        faces: List[List[int]], source_file: str) -> None:
+    def _write_obj_file(
+        self,
+        output_file: str,
+        vertices: list[tuple[float, float, float]],
+        faces: list[list[int]],
+        source_file: str,
+    ) -> None:
         """Write vertices and faces to an OBJ file.
 
         Args:
@@ -107,8 +112,7 @@ class STLToOBJConverter(BaseConverter):
         """
         with open(output_file, "w") as objfile:
             objfile.write("# File type: ASCII OBJ\n")
-            objfile.write(
-                f"# Generated from {os.path.basename(source_file)}\n")
+            objfile.write(f"# Generated from {os.path.basename(source_file)}\n")
 
             # Write vertices
             for vertex in vertices:
